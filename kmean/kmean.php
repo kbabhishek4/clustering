@@ -1,5 +1,4 @@
 <?php
-
 $data = array( 
 	2,
 	3,
@@ -23,29 +22,39 @@ print_r(kMeans($data, 3));
 function initialiseCentroids(array $data, $k) {
 	$dimensions = count($data[0]);
 	$centroids = array();
-	$dimmax = $data[0];
-	$dimmin = $data[0]; 
 
 	for($i = 0; $i < $k; $i++) {
 		
-		$centroids[$i] =initialiseCentroid($data);
+		$centroids[$i] =initialiseCentroid($data,$centroids);
 	}
 	return $centroids;
 }
 
-function initialiseCentroid($data) {
-		$centroid = $data[rand(0, count($data)-1)];
+function initialiseCentroid($data,$centroids='') {
+		if(isset($centroids))
+		{
+			while(true)
+			{
+				$centroid = $data[rand(0, count($data)-1)];
+				if(!in_array($centroid,$centroids))
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			$centroid = $data[rand(0, count($data)-1)];
+		}
 		return $centroid;
 }
 
 function kMeans($data, $k) {
 	$centroids = initialiseCentroids($data, $k);
 	$mapping = array();
-
+	echo "\n\n\nrandom generated centroids:\n\n";
+	print_r($centroids);
 	while(true) {
-		
-		echo "\n\n\ngenerated random centroids:\n\n";
-		print_r($centroids);
 		$new_mapping = assignCentroids($data, $centroids);
 		echo "\n\n\nmapping:\n\n";
 		print_r($new_mapping);
@@ -130,7 +139,7 @@ function updateCentroids($mapping, $data, $k) {
 	$centroids[$centID]=$temp;
    }
 	$centroids=array_map(function($x){return round($x);},$centroids);
-	echo "\n\n\n new centroids\n\n";
+	echo "\n\n\n>>>>>>>>>>> new centroids\n\n";
 	print_r($centroids);
 
 
